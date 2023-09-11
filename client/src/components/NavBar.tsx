@@ -11,6 +11,7 @@ import { Sun, Moon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import type { User } from "../lib/types";
+import { useUserStore } from "../lib/store";
 
 // To authorize user and redirect to dashboard if logged in
 const authorize = async (navigate: Function, setLoading: Function) => {
@@ -32,7 +33,12 @@ const getUser = async (setUser: Function) => {
 };
 
 // Handler for google login
-const onCode = async (tokenRes: any, navigate: Function, toast: Function, setLoading: Function) => {
+const onCode = async (
+    tokenRes: any,
+    navigate: Function,
+    toast: Function,
+    setLoading: Function
+) => {
     // console.log(tokenRes);
     setLoading(true);
     const res = await fetch("/api/auth/authenticate", {
@@ -56,9 +62,12 @@ const onCode = async (tokenRes: any, navigate: Function, toast: Function, setLoa
     }
 };
 
-const logout = async (navigate: Function) => {
+const logout = async (navigate: Function, setTasks: Function) => {
     const res = await fetch("/api/auth/logout");
-    if (res.status === 200) navigate("/");
+    if (res.status === 200) {
+        setTasks([]);
+        navigate("/");
+    }
 };
 
 /* NAVBAR COMPONENT ------------------------------------------------------------ */
@@ -77,12 +86,22 @@ export default function NavBar({ loggedIn }: { loggedIn: boolean }) {
     const [loading, setLoading] = useState(false);
 
     // User State
-    const [user, setUser] = useState<false | User>(false);
+    const user = useUserStore((state) => state.user);
+    const setUser = useUserStore((state) => state.setUser);
+
+    const setTasks = useUserStore((state) => state.setTasks);
+    const setFetchTasks = useUserStore((state) => state.setFetchTasks);
 
     useEffect(() => {
         if (!loggedIn) authorize(navigate, setLoading);
         else getUser(setUser);
     }, []);
+
+    useEffect(() => {
+        if (user) {
+            setFetchTasks(true);
+        }
+    }, [user]);
 
     return (
         <Flex
@@ -109,8 +128,10 @@ export default function NavBar({ loggedIn }: { loggedIn: boolean }) {
                     <></>
                 )}
                 <Button
-                    onClick={() => (loggedIn ? logout(navigate) : login())}
-                    colorScheme="purple"
+                    onClick={() =>
+                        loggedIn ? logout(navigate, setTasks) : login()
+                    }
+                    colorScheme={loggedIn ? "red" : "facebook"}
                     isLoading={loading}
                 >
                     <Text fontWeight="semibold">

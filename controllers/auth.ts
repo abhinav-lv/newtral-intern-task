@@ -32,7 +32,7 @@ export const authenticate = async (req: Request, res: Response) => {
         );
         const gUser = await rezz.json();
         const user: User = {
-            userId: gUser.sub,
+            userId: gUser.email.split("@")[0],
             name: gUser.name,
             picture: gUser.picture,
             email: gUser.email,
@@ -68,7 +68,7 @@ export const authorize = async (req: Request, res: Response) => {
     try {
         if (req.session.user) {
             res.status(200).json(req.session.user);
-            console.log(req.session.user);
+            // console.log(req.session.user);
             return;
         }
         res.status(403).json("Unauthorized");

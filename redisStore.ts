@@ -3,7 +3,9 @@ import RedisStore from "connect-redis";
 import { createClient } from "redis";
 
 envConfig();
-const redisClient = createClient();
+const redisClient = createClient({
+    url: process.env.REDIS_URI,
+});
 redisClient.connect().catch(console.error);
 
 // Initialize store

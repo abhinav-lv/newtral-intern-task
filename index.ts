@@ -4,6 +4,7 @@ import { connect as connectToDb } from "mongoose";
 import session from "express-session";
 import authRoute from "./routes/auth";
 import userRoute from "./routes/user";
+import taskRoute from "./routes/task";
 import { redisStore } from "./redisStore";
 import { config as envConfig } from "dotenv";
 import { authMiddleware } from "./controllers/auth";
@@ -35,6 +36,7 @@ app.use(express.static(clientBuildDirectory));
 
 app.use("/api/auth", authRoute);
 app.use("/api/user", userRoute);
+app.use("/api/task", taskRoute);
 
 app.get("*", authMiddleware, (req: Request, res: Response) => {
     res.sendFile(path.join(clientBuildDirectory, "/index.html"));

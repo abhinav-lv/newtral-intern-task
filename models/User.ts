@@ -13,6 +13,9 @@ const userSchema = new Schema({
         required: true,
     },
     picture: String,
-    email: String,
+    email: {
+        type: String,
+        required: true,
+    },
 });
 export const UserModel = mongoose.model("User", userSchema);
