@@ -5,6 +5,9 @@ import { createClient } from "redis";
 envConfig();
 const redisClient = createClient({
     url: process.env.REDIS_URI,
+    socket: {
+        connectTimeout: 50000,
+    },
 });
 redisClient.connect().catch(console.error);
 
