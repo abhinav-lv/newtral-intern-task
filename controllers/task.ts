@@ -16,17 +16,21 @@ export const addTask = async (req: Request, res: Response) => {
 
 export const getTasks = async (req: Request, res: Response) => {
     try {
-        const userId = req.session.user.userId;
-        const tasks = (await TaskModel.find({ userId: userId })) || [];
-        const tasksObjs = tasks.map((task: any) => ({
-            taskId: task._id.toString(),
-            title: task.title,
-            description: task.description,
-            due: task.due,
-            priority: task.priority,
-            isCompleted: task.isCompleted,
-        }));
-        res.status(200).json(tasksObjs);
+        if (req.session?.user?.userId) {
+            const userId = req.session.user.userId;
+            const tasks = (await TaskModel.find({ userId: userId })) || [];
+            const tasksObjs = tasks.map((task: any) => ({
+                taskId: task._id.toString(),
+                title: task.title,
+                description: task.description,
+                due: task.due,
+                priority: task.priority,
+                isCompleted: task.isCompleted,
+            }));
+            res.status(200).json(tasksObjs);
+        } else {
+            res.status(500).json("Couldn't get tasks from database");
+        }
     } catch (err: any) {
         console.error(err.message);
         res.status(500).json("Couldn't get tasks from database");
