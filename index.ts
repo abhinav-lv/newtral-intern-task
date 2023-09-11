@@ -10,6 +10,12 @@ import { config as envConfig } from "dotenv";
 import { authMiddleware } from "./controllers/auth";
 import express, { Request, Response } from "express";
 
+declare module "express-session" {
+    interface SessionData {
+        user: { [key: string]: any };
+    }
+}
+
 envConfig();
 const app = express();
 const clientBuildDirectory = path.join(__dirname, "/../client/dist");
