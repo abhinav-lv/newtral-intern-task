@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { UserModel } from "../models/User";
-import fetch from "node-fetch";
+import axios from "axios";
 
 export const authMiddleware = (
     req: Request,
@@ -23,15 +23,15 @@ export const authenticate = async (req: Request, res: Response) => {
         const obj = req.body;
         const access_token = obj.access_token;
 
-        const rezz = await fetch(
-            `https://www.googleapis.com/oauth2/v3/userinfo`,
+        const data = await axios.get(
+            "https://www.googleapis.com/oauth2/v3/userinfo",
             {
                 headers: {
                     Authorization: `Bearer ${access_token}`,
                 },
             }
         );
-        const gUser: any = await rezz.json();
+        const gUser = data.data;
         const user: User = {
             userId: gUser.email.split("@")[0],
             name: gUser.name,
