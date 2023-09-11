@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { UserModel } from "../models/User";
+import fetch from "node-fetch";
 
 export const authMiddleware = (
     req: Request,
@@ -30,7 +31,7 @@ export const authenticate = async (req: Request, res: Response) => {
                 },
             }
         );
-        const gUser = await rezz.json();
+        const gUser: any = await rezz.json();
         const user: User = {
             userId: gUser.email.split("@")[0],
             name: gUser.name,
