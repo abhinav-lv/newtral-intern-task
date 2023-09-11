@@ -23,3 +23,6 @@
     ```
     npm run dev
     ```
+---
+## You can check out the hosted app by following this link:
+[Hosted App](https://newtral-intern-task-production.up.railway.app/)
